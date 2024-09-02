@@ -1,7 +1,7 @@
 export default {
   providers: [
     {
-      domain: "https://heroic-salmon-55.clerk.accounts.dev",
+      domain: "https://strong-shiner-41.clerk.accounts.dev",
       applicationID: "convex",
     },
   ],

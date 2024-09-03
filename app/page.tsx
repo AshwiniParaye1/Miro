@@ -5,12 +5,6 @@ export default function Home() {
   return (
     <>
       <Button>Click here</Button>
-      <SignedOut>
-        <SignInButton />
-      </SignedOut>
-      <SignedIn>
-        <UserButton />
-      </SignedIn>
     </>
   );
 }

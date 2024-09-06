@@ -4,24 +4,28 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import qs from "query-string";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useDebounceValue } from "usehooks-ts";
 
 export function SearchInput() {
   const router = useRouter();
-  const [debounceValue, setValue] = useDebounceValue("", 500);
+  const [value, setValue] = useState("");
+  const debouncedValue = useDebounceValue(value, 500);
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     setValue(e.target.value);
   };
 
   useEffect(() => {
-    const url = qs.stringifyUrl(
+    // Sanitize the debounced value and trim spaces
+    const sanitizedValue = debouncedValue[0]
+      .trim()
+      .replace(/[^a-zA-Z0-9 ]/g, "");
+    // Construct the query string with the sanitized value
+    let queryString = qs.stringifyUrl(
       {
         url: "/",
-        query: {
-          search: debounceValue,
-        },
+        query: sanitizedValue ? { search: sanitizedValue } : {},
       },
       {
         skipEmptyString: true,
@@ -29,8 +33,12 @@ export function SearchInput() {
       }
     );
 
-    router.push(url);
-  }, [debounceValue, router]);
+    // Trim any leading or trailing spaces after query string
+    queryString = queryString.trim();
+
+    // Update the URL with the trimmed and sanitized query string
+    router.push(queryString);
+  }, [debouncedValue, router]);
 
   return (
     <div className="w-full relative">
@@ -39,7 +47,7 @@ export function SearchInput() {
         className="w-full max-w-[516px] pl-9"
         placeholder="Search boards"
         onChange={handleChange}
-        value={debounceValue}
+        value={value}
       />
     </div>
   );

@@ -11,25 +11,27 @@ export const EmptyBoards = () => {
   const { organization } = useOrganization();
   const create = useMutation(api.board.create);
 
-  const onClick = async () => {
+  const onClick = () => {
     if (!organization) return;
 
     create({
-      orgId: organization.id,
       title: "Untitled",
+      orgId: organization.id,
+    }).catch(() => {
+      console.error("Failed to create board");
     });
   };
 
   return (
     <div className="h-full flex flex-col items-center justify-center">
-      <Image src="/note.svg" alt="Empty" width={110} height={110} />
+      <Image src="/note.svg" alt="Empty" height={110} width={110} priority />
       <h2 className="text-2xl font-semibold mt-6">Create your first board</h2>
       <p className="text-muted-foreground text-sm mt-2">
-        Start by creating your first board for your organization
+        Start by creating a board for your organization
       </p>
       <div className="mt-6">
-        <Button onClick={onClick} size={"lg"}>
-          Create Board
+        <Button size="lg" onClick={onClick}>
+          Create board
         </Button>
       </div>
     </div>

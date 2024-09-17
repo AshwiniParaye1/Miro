@@ -6,6 +6,7 @@ import React from "react";
 import { api } from "@/convex/_generated/api";
 import { useOrganization } from "@clerk/nextjs";
 import { useApiMutation } from "@/hooks/use-api-mutation";
+import { toast } from "sonner";
 
 export const EmptyBoards = () => {
   const { organization } = useOrganization();
@@ -17,9 +18,14 @@ export const EmptyBoards = () => {
     mutate({
       title: "Untitled",
       orgId: organization.id,
-    }).catch(() => {
-      console.error("Failed to create board");
-    });
+    })
+      .then((id) => {
+        toast.success("Board created");
+        //todo - redirect to new board
+      })
+      .catch((e) => {
+        toast.error("Error creating board");
+      });
   };
 
   return (

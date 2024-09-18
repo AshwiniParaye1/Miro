@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { Link2 } from "lucide-react";
 
 interface ActionsProps {
   children: React.ReactNode;
@@ -27,6 +28,17 @@ export const Actions = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
+      <DropdownMenuContent
+        side={side}
+        sideOffset={sideOffset}
+        className="w-60"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <DropdownMenuItem className="p-3 cursor-pointer">
+          <Link2 className="w-4 h-4 mr-2" />
+          Copy Board Link
+        </DropdownMenuItem>
+      </DropdownMenuContent>
     </DropdownMenu>
   );
 };

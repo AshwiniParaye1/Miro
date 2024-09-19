@@ -11,11 +11,8 @@ export const List = () => {
   });
 
   if (!userMemberships.data?.length) {
-    console.log("No organizations found.");
     return null;
   }
-
-  console.log("Organizations found:", userMemberships.data);
 
   return (
     <div>

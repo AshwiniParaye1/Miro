@@ -43,7 +43,7 @@ export const Toolbar = () => {
           label="Ellipse"
           icon={Circle}
           onClick={() => {}}
-          isActive={true}
+          isActive={false}
         />
         <ToolButton
           label="Pen"

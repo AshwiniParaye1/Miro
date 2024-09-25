@@ -11,8 +11,8 @@ import {
   useMutation,
 } from "@/liveblocks.config";
 import { Camera, CanvasMode, CanvasState } from "@/types/canvas";
-import { CursorsPresence } from "@/app/(dashboard)/_components/cursors-presence";
 import { pointerEventToCanvasPoint } from "@/lib/utils";
+import { CursorsPresence } from "@/app/(dashboard)/_components/cursors-presence";
 
 interface CanvasProps {
   boardId: string;
@@ -29,11 +29,6 @@ export const Canvas = ({ boardId }: CanvasProps) => {
   const canRedo = useCanRedo();
 
   const onWheel = useCallback((e: React.WheelEvent) => {
-    console.log({
-      x: e.deltaX,
-      y: e.deltaY,
-    });
-
     setCamera((camera) => ({
       x: camera.x - e.deltaX,
       y: camera.y - e.deltaY,
@@ -53,6 +48,12 @@ export const Canvas = ({ boardId }: CanvasProps) => {
     []
   );
 
+  const onPointerLeave = useMutation(({ setMyPresence }) => {
+    setMyPresence({
+      cursor: null,
+    });
+  }, []);
+
   return (
     <main className="w-full h-full relative bg-neutral-100 touch-none">
       <Info boardId={boardId} />
@@ -69,6 +70,7 @@ export const Canvas = ({ boardId }: CanvasProps) => {
         className="h-[100vh] w-[100vw]"
         onWheel={onWheel}
         onPointerMove={onPointerMove}
+        onPointerLeave={onPointerLeave}
       >
         <g>
           <CursorsPresence />

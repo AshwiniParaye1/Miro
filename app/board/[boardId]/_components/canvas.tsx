@@ -32,7 +32,7 @@ interface CanvasProps {
 export const Canvas = ({ boardId }: CanvasProps) => {
   const layerIds = useStorage((root) => root.layerIds);
 
-  const [convasState, setCanvasState] = useState<CanvasState>({
+  const [canvasState, setCanvasState] = useState<CanvasState>({
     mode: CanvasMode.None,
   });
 
@@ -110,12 +110,32 @@ export const Canvas = ({ boardId }: CanvasProps) => {
     });
   }, []);
 
+  const onPointerUp = useMutation(
+    ({}, e) => {
+      const point = pointerEventToCanvasPoint(e, camera);
+
+      console.log({
+        point,
+        mode: canvasState.mode,
+      });
+
+      if (canvasState.mode === CanvasMode.Inserting) {
+        insertLayer(canvasState.layerType, point);
+      } else {
+        setCanvasState({ mode: CanvasMode.None });
+      }
+
+      history.resume();
+    },
+    [camera, canvasState, history, insertLayer]
+  );
+
   return (
     <main className="w-full h-full relative bg-neutral-100 touch-none">
       <Info boardId={boardId} />
       <Participants />
       <Toolbar
-        canvasState={convasState}
+        canvasState={canvasState}
         setCanvasState={setCanvasState}
         canRedo={canRedo}
         canUndo={canUndo}
@@ -127,6 +147,7 @@ export const Canvas = ({ boardId }: CanvasProps) => {
         onWheel={onWheel}
         onPointerMove={onPointerMove}
         onPointerLeave={onPointerLeave}
+        onPointerUp={onPointerUp}
       >
         <g style={{ transform: `translate(${camera.x}px, ${camera.y}px)` }}>
           <CursorsPresence />

@@ -115,11 +115,6 @@ export const Canvas = ({ boardId }: CanvasProps) => {
     ({}, e) => {
       const point = pointerEventToCanvasPoint(e, camera);
 
-      console.log({
-        point,
-        mode: canvasState.mode,
-      });
-
       if (canvasState.mode === CanvasMode.Inserting) {
         insertLayer(canvasState.layerType, point);
       } else {

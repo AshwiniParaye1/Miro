@@ -25,6 +25,7 @@ import { CursorsPresence } from "@/app/(dashboard)/_components/cursors-presence"
 import { nanoid } from "nanoid";
 import { LiveObject } from "@liveblocks/client";
 import { LayerPreview } from "./layer-preview";
+import { SelectionBox } from "./selection-box";
 
 const MAX_LAYERS = 100;
 
@@ -40,8 +41,8 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 
   const [camera, setCamera] = useState<Camera>({ x: 0, y: 0 });
   const [lastUsedColor, setLastUsedColor] = useState<Color>({
-    r: 0,
-    g: 0,
+    r: 255,
+    g: 165,
     b: 0,
   });
 
@@ -202,6 +203,7 @@ export const Canvas = ({ boardId }: CanvasProps) => {
               selectionColor={layerIdsToColorSelection[layerId]}
             />
           ))}
+          <SelectionBox onResizeHandlePointerDown={() => {}} />
           <CursorsPresence />
         </g>
       </svg>

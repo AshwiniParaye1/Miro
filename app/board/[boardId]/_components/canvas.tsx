@@ -122,6 +122,12 @@ export const Canvas = ({ boardId }: CanvasProps) => {
     [canvasState]
   );
 
+  const unselectLayers = useMutation(({ self, setMyPresence }) => {
+    if (self.presence.selection.length > 0) {
+      setMyPresence({ selection: [] }, { addToHistory: true });
+    }
+  }, []);
+
   const resizeSelectedLayer = useMutation(
     ({ storage, self }, point: Point) => {
       if (canvasState.mode !== CanvasMode.Resizing) {
@@ -189,11 +195,36 @@ export const Canvas = ({ boardId }: CanvasProps) => {
     });
   }, []);
 
+  const onPointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      const point = pointerEventToCanvasPoint(e, camera);
+
+      if (canvasState.mode === CanvasMode.Inserting) {
+        return;
+      }
+
+      //TODO: add case for drawing
+
+      setCanvasState({
+        mode: CanvasMode.Pressing,
+        origin: point,
+      });
+    },
+    [camera, canvasState.mode, setCanvasState]
+  );
+
   const onPointerUp = useMutation(
     ({}, e) => {
       const point = pointerEventToCanvasPoint(e, camera);
 
-      if (canvasState.mode === CanvasMode.Inserting) {
+      if (
+        canvasState.mode === CanvasMode.None ||
+        canvasState.mode === CanvasMode.Pressing
+      ) {
+        unselectLayers();
+
+        setCanvasState({ mode: CanvasMode.None });
+      } else if (canvasState.mode === CanvasMode.Inserting) {
         insertLayer(canvasState.layerType, point);
       } else {
         setCanvasState({ mode: CanvasMode.None });
@@ -201,7 +232,7 @@ export const Canvas = ({ boardId }: CanvasProps) => {
 
       history.resume();
     },
-    [camera, canvasState, history, insertLayer]
+    [camera, canvasState, history, insertLayer, unselectLayers]
   );
 
   const selections = useOthersMapped((other) => other.presence?.selection);
@@ -269,6 +300,7 @@ export const Canvas = ({ boardId }: CanvasProps) => {
         onPointerMove={onPointerMove}
         onPointerLeave={onPointerLeave}
         onPointerUp={onPointerUp}
+        onPointerDown={onPointerDown}
       >
         <g style={{ transform: `translate(${camera.x}px, ${camera.y}px)` }}>
           {layerIds.map((layerId) => (

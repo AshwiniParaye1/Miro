@@ -17,6 +17,30 @@ export const SelectionTools = memo(
   ({ camera, setLastUsedColor }: SelectionToolsProps) => {
     const selection = useSelf((me) => me.presence.selection);
 
+    const moveToFront = useMutation(
+      ({ storage }) => {
+        const liveLayerIds = storage.get("layerIds");
+
+        const indices: number[] = [];
+
+        const arr = liveLayerIds.toImmutable();
+
+        for (let i = 0; i < arr.length; i++) {
+          if (selection.includes(arr[i])) {
+            indices.push(i);
+          }
+        }
+
+        for (let i = indices.length - 1; i >= 0; i--) {
+          liveLayerIds.move(
+            indices[i],
+            arr.length - 1 - (indices.length - 1 - i)
+          );
+        }
+      },
+      [selection]
+    );
+
     const moveToBack = useMutation(
       ({ storage }) => {
         const liveLayerIds = storage.get("layerIds");
@@ -75,7 +99,7 @@ export const SelectionTools = memo(
 
         <div className="flex flex-col gap-y-0.5">
           <Hint label="Bring to front">
-            <Button variant={"board"} size={"icon"}>
+            <Button onClick={moveToFront} variant={"board"} size={"icon"}>
               <BringToFront />
             </Button>
           </Hint>

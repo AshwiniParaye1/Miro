@@ -2,6 +2,7 @@ import { useSelectionBounds } from "@/hooks/use-selection-bounds";
 import { useSelf } from "@/liveblocks.config";
 import { Camera, Color } from "@/types/canvas";
 import { memo } from "react";
+import { ColorPicker } from "./color-picker";
 
 interface SelectionToolsProps {
   camera: Camera;
@@ -31,7 +32,7 @@ export const SelectionTools = memo(
           )`,
         }}
       >
-        SelectionTools
+        <ColorPicker onChange={() => {}} />
       </div>
     );
   }

@@ -30,7 +30,7 @@ export const LayerPreview = memo(
           />
         );
       default:
-        console.warn("Unsupported layer type: ");
+        console.warn("Unsupported layer type");
         return null;
     }
   }
